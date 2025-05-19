@@ -1,40 +1,44 @@
 import streamlit as st
-import datetime
 from stock_screening_gui_line import screen_stocks
+import tempfile
+import os
 
 st.set_page_config(page_title="株スクリーニングツール", layout="wide")
-st.title("📈 株スクリーニング＆通知ツール")
+st.title("📊 株スクリーニングツール（Breakout & Pullback）")
 
-# ファイルアップロード
-uploaded_file = st.file_uploader("銘柄リストファイル（Excel）をアップロードしてください", type=["xlsx"])
+# === ファイルアップロード ===
+st.markdown("### Step 1: 銘柄リストのアップロード")
+uploaded_file = st.file_uploader("日経225+αのExcelファイルを選択してください（.xlsx）", type="xlsx")
 
-# 各種パラメータ入力
-st.sidebar.header("🔧 スクリーニング設定")
-days_back = st.sidebar.slider("過去何日分のデータを取得するか", min_value=30, max_value=90, value=60)
+# === パラメータ設定 ===
+st.markdown("### Step 2: スクリーニング設定")
+days = st.slider("過去何日分の株価データを使用するか", min_value=30, max_value=120, value=60)
+sheet_name = st.text_input("シート名（通常はSheet1）", value="Sheet1")
 
-output_filename = st.text_input("出力ファイル名", value="screening_result.xlsx")
+# === LINE通知設定 ===
+use_line = st.checkbox("LINE通知を有効にする")
+line_token = st.text_input("LINE Notifyのアクセストークン（※公開しないでください）", type="password") if use_line else None
 
-# 実行ボタン
-if st.button("🚀 スクリーニングを実行"):
-    if uploaded_file is not None:
-        with st.spinner("スクリーニング中..."):
-            try:
-                screen_stocks(
-                    input_file=uploaded_file,
-                    output_file=output_filename,
-                    sheet_name="Sheet1",
-                    days_back=days_back,
-                    line_token=None  # ← LINE通知を無効化
-                )
-                st.success("✅ スクリーニング完了！")
-                with open(output_filename, "rb") as f:
-                    st.download_button(
-                        label="📥 結果をダウンロード",
-                        data=f,
-                        file_name=output_filename,
-                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                    )
-            except Exception as e:
-                st.error(f"❌ エラーが発生しました: {e}")
+# === 実行ボタン ===
+if st.button("📈 スクリーニングを実行"):
+    if uploaded_file is None:
+        st.error("Excelファイルをアップロードしてください")
     else:
-        st.warning("⚠️ Excelファイルをアップロードしてください。")
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx") as tmp:
+            tmp.write(uploaded_file.read())
+            tmp_path = tmp.name
+
+        output_path = os.path.join(tempfile.gettempdir(), "screening_result.xlsx")
+
+        with st.spinner("スクリーニング実行中..."):
+            screen_stocks(
+                input_file=tmp_path,
+                output_file=output_path,
+                sheet_name=sheet_name,
+                days_back=days,
+                line_token=line_token
+            )
+
+        st.success("✅ スクリーニング完了！")
+        with open(output_path, "rb") as f:
+            st.download_button("📥 結果Excelをダウンロード", f, file_name="screening_result.xlsx")
