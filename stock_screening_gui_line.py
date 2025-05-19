@@ -1,7 +1,3 @@
-pip uninstall numpy -y
-pip install numpy --no-cache-dir
-pip uninstall pandas-ta -y
-pip install pandas-ta --no-cache-dir
 import pandas as pd
 import yfinance as yf
 import datetime
