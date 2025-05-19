@@ -41,17 +41,6 @@ def is_pullback(df):
     )
     return down_10 and 30 <= rsi <= 50 and above_ma and macd_cross
 
-
-def send_line_notify(token, message):
-    url = "https://notify-api.line.me/api/notify"
-    headers = {"Authorization": f"Bearer {token}"}
-    data = {"message": message}
-    try:
-        requests.post(url, headers=headers, data=data)
-    except Exception as e:
-        print(f"LINE通知エラー: {e}")
-
-
 def screen_stocks(input_file, output_file, sheet_name="Sheet1", days_back=60, line_token=None):
     stock_list = load_stock_list(input_file, sheet_name)
     breakout_list = []
