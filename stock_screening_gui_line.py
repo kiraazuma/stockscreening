@@ -3,7 +3,7 @@ import yfinance as yf
 import datetime
 import pandas_ta as ta
 import requests
-
+from io import BytesIO
 
 def load_stock_list(file_like, sheet_name):
     df = pd.read_excel(file_like, sheet_name=sheet_name)
@@ -51,8 +51,20 @@ def send_line_notify(token, message):
         print(f"LINE通知エラー: {e}")
 
 
+def load_stock_list(file_like_object, sheet_name):
+    df = pd.read_excel(file_like_object, sheet_name=sheet_name)
+    df['コード'] = df['コード'].astype(str).str.zfill(4)
+    df['Symbol'] = df['コード'] + ".T"
+    return df
+
 def screen_stocks(input_file, output_file, sheet_name="Sheet1", days_back=60, line_token=None):
-    stock_list = load_stock_list(input_file, sheet_name)
+    # ファイル形式の確認と読み込み
+    if isinstance(input_file, str):
+        stock_list = load_stock_list(input_file, sheet_name)
+    else:
+        file_bytes = BytesIO(input_file.read())
+        stock_list = load_stock_list(file_bytes, sheet_name)
+
     breakout_list = []
     pullback_list = []
 
