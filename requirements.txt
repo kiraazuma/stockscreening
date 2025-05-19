@@ -3,5 +3,6 @@ yfinance
 pandas
 openpyxl
 requests
-pandas-ta
 setuptools
+numpy==1.24.4
+pandas-ta==0.3.14b0
