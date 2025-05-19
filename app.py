@@ -24,7 +24,7 @@ if st.button("🚀 スクリーニングを実行"):
                     output_file=output_filename,
                     sheet_name="Sheet1",
                     days_back=days_back,
-
+                    line_token=None  # ← LINE通知を無効化
                 )
                 st.success("✅ スクリーニング完了！")
                 with open(output_filename, "rb") as f:
