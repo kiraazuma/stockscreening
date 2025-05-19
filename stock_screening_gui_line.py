@@ -3,8 +3,7 @@ import yfinance as yf
 import datetime
 import pandas_ta as ta
 import requests
-import numpy as np
-npNaN = np.nan
+
 
 def load_stock_list(file_path, sheet_name):
     df = pd.read_excel(file_path, sheet_name=sheet_name)
@@ -12,13 +11,6 @@ def load_stock_list(file_path, sheet_name):
     df['Symbol'] = df['コード'] + ".T"
     return df
 
-def send_line_notify(token, message):
-    url = "https://notify-api.line.me/api/notify"
-    headers = {"Authorization": f"Bearer {token}"}
-    payload = {"message": message}
-    response = requests.post(url, headers=headers, data=payload)
-    if response.status_code != 200:
-        raise Exception(f"LINE通知失敗: {response.status_code} - {response.text}")
 
 def calculate_indicators(df):
     df['MA20'] = df['Close'].rolling(window=20).mean()
@@ -47,6 +39,17 @@ def is_pullback(df):
         df['MACD'].iloc[-1] > df['MACD_signal'].iloc[-1]
     )
     return down_10 and 30 <= rsi <= 50 and above_ma and macd_cross
+
+
+def send_line_notify(token, message):
+    url = "https://notify-api.line.me/api/notify"
+    headers = {"Authorization": f"Bearer {token}"}
+    data = {"message": message}
+    try:
+        requests.post(url, headers=headers, data=data)
+    except Exception as e:
+        print(f"LINE通知エラー: {e}")
+
 
 def screen_stocks(input_file, output_file, sheet_name="Sheet1", days_back=60, line_token=None):
     stock_list = load_stock_list(input_file, sheet_name)
