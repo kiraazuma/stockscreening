@@ -5,8 +5,8 @@ import pandas_ta as ta
 import requests
 
 
-def load_stock_list(file_path, sheet_name):
-    df = pd.read_excel(file_path, sheet_name=sheet_name)
+def load_stock_list(file_like, sheet_name):
+    df = pd.read_excel(file_like, sheet_name=sheet_name)
     df['コード'] = df['コード'].astype(str).str.zfill(4)
     df['Symbol'] = df['コード'] + ".T"
     return df
