@@ -3,7 +3,8 @@ import yfinance as yf
 import datetime
 import pandas_ta as ta
 import requests
-
+import numpy as np
+from numpy import NaN as npNaN
 
 def load_stock_list(file_path, sheet_name):
     df = pd.read_excel(file_path, sheet_name=sheet_name)
