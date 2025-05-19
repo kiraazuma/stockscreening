@@ -12,8 +12,6 @@ uploaded_file = st.file_uploader("銘柄リストファイル（Excel）をア�
 st.sidebar.header("🔧 スクリーニング設定")
 days_back = st.sidebar.slider("過去何日分のデータを取得するか", min_value=30, max_value=90, value=60)
 
-line_token = st.sidebar.text_input("LINE Notify トークン（通知を受けたい場合のみ）", type="password")
-
 output_filename = st.text_input("出力ファイル名", value="screening_result.xlsx")
 
 # 実行ボタン
