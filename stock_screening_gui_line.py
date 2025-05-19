@@ -4,7 +4,6 @@ import datetime
 import pandas_ta as ta
 import requests
 import numpy as np
-import numpy as np
 npNaN = np.nan
 
 def load_stock_list(file_path, sheet_name):
