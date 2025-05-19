@@ -12,6 +12,13 @@ def load_stock_list(file_path, sheet_name):
     df['Symbol'] = df['コード'] + ".T"
     return df
 
+def send_line_notify(token, message):
+    url = "https://notify-api.line.me/api/notify"
+    headers = {"Authorization": f"Bearer {token}"}
+    payload = {"message": message}
+    response = requests.post(url, headers=headers, data=payload)
+    if response.status_code != 200:
+        raise Exception(f"LINE通知失敗: {response.status_code} - {response.text}")
 
 def calculate_indicators(df):
     df['MA20'] = df['Close'].rolling(window=20).mean()
