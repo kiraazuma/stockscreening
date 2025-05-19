@@ -1,7 +1,7 @@
 import pandas as pd
 import yfinance as yf
 import datetime
-# import pandas_ta as ta
+import pandas_ta as ta
 import requests
 import numpy as np
 npNaN = np.nan
