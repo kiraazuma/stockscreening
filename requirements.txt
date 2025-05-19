@@ -4,5 +4,5 @@ pandas
 openpyxl
 requests
 setuptools
-numpy
+numpy==1.23.5
 pandas-ta
