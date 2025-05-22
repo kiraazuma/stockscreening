@@ -24,7 +24,7 @@ def calculate_indicators(df):
 def is_breakout(df):
     recent_high = df['High'].iloc[-11:-1].max()
     breakout_today = df['Close'].iloc[-1] > recent_high
-    volume_spike = df['Volume'].iloc[-1] > 1.5 * df['Volume'].iloc[-6:-1].mean()
+    volume_spike = df['Volume'].iloc[-1] > 0.9 * df['Volume'].iloc[-6:-1].mean()
     return breakout_today and volume_spike
 
 
